@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Pokemon Web!</title>
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans|Candal|Alegreya+Sans">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css'  %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/imagehover.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+</head>
+
+<body style="background-image:url({% static 'img/bg.jpg' %});">
+	<div class="container" style="background-color: #fff">
+		<!--Navigation bar-->
+		<nav class="navbar navbar-default navbar-fixed-top" style="position: unset;">
+			<div class="pull-left nav-icon">
+				<img src="{% static 'img/download.png' %}">
+			</div>
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+
+				<a class="navbar-brand" href="{% url 'your_trainers' %}" style="margin-left: 0;">Pok&eacute;mon<span>WEB</span></a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar" >
+				<ul class="nav navbar-nav navbar-right" style="margin:0px;">
+					<li><a href="{% url 'your_trainers' %}">Home</a></li>
+					{% if user.is_authenticated %}
+						<li><a href="{% url 'your_pokemons' pk=user.pk %}">Pokemons</a></li>
+					<li><a href="{% url 'pokemon_list' %}">Pokedex</a></li>
+						<li><a href="{% url 'logout' %}">Logout</a></li>
+					{% else %}
+						<li><a href="{% url 'login' %}">Login</a></li>
+					{% endif %}
+				</ul>
+			</div>
+			{% if user.is_authenticated %}
+			<div class="cta-2-form text-right ">
+				{% if "/your_pokemons/" in request.path  %}
+					<form action="{% url 'search' search='your_pokemons' pk=user.pk %}" id="" role="search">
+				{% elif request.path == "/your_trainers/" or '/trainer/' in request.path %}
+					<form action="{% url 'search' search='trainer' pk=user.pk %}" id="" role="search">
+				{% elif "/pokemon_list/" in request.path %}
+					<form action="{% url 'search' search='pokemon_list' pk=user.pk %}" id="" role="search">
+				{% elif "/trainer_pokemon_list/" in request.path %}
+					<form action="{% url 'search' search='trainer_pokemon_list' pk=trainer.pk %}" id="" role="search">
+				{% endif %}
+					<input name="q" placeholder="Search here.." type="text" class="search-text">
+					<button class="cta-2-form-submit-btn" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+				</form>
+			</div>
+			{% endif %}
+		</nav>
+		<div class="container-fluid">
+			{% block body %}
+            {% endblock %}
+		</div>
+		<!--Footer-->
+		<footer id="footer" class="footer text-center">
+			ALl rights reserved 2019
+		</footer>
+		<!--/ Footer-->
+	</div>
+
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/jquery.easing.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/custom.js' %}"></script>
+	<script src="{% static 'js/contactform.js' %}"></script>
+
+</body>
+
+</html>

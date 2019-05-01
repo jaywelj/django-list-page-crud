@@ -1,0 +1,32 @@
+{% extends 'trainers/pokemon_web_template.html' %}
+{% load static %}
+{% block body %}
+	<div class="row">
+		<div class="header-section text-center">
+			<h1>Welcome, {{ user.username }} </h1>
+			<p>Here is the list of trainers you've created.</p>
+			<hr class="bottom-line">
+		</div>
+		{% for trainer in trainers %}
+			<div class="col-md-4 col-sm-6">
+				<div class="card">
+					<img class="card-img-top" src="{{ trainer.photo.url }}" alt="Card image cap">
+					<div class="card-body">
+						<h5 class="card-title">{{ trainer.name }}</h5>
+						<p class="card-text">{{ trainer.get_sex_display }}</p>
+						<a href="{% url 'trainer_pokemon_list' pk=trainer.pk %}" class="btn btn-primary btn-sm">View Pokemons</a>
+						<div class="fea">
+						  	<a href="{% url 'edit_trainer' pk=trainer.pk %}"  class="btn btn-default btn-sm" title="edit trainer"><span class="glyphicon glyphicon-pencil"></span></a> 
+						  	<a href="{% url 'remove_trainer' pk=trainer.pk %}" class="btn btn-default btn-sm" title="delete trainer"><span class="glyphicon glyphicon-remove"></span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+		<div class="col-md-4 col-sm-6">
+			<div class="card">
+				<a class="btn btn-icon" href="{% url 'create_trainer' %}" title="add trainer"><i class="glyphicon glyphicon-plus"></i></a>
+			</div>
+		</div>
+	</div>
+{% endblock %}
