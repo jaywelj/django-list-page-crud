@@ -10,7 +10,7 @@ def signup(request):
 			new_user = authenticate(username=form.cleaned_data["username"],password=form.cleaned_data["password1"])
 			login(request, new_user)
 			username = form.cleaned_data.get("username")
-			return redirect("trainer_list")
+			return redirect("your_trainers")
 	else:
 		form = SignUpForm()
 	return render(request, "accounts/signup.html", {"form":form})

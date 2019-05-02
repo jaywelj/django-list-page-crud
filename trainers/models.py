@@ -72,7 +72,7 @@ class PokemonOwnership(models.Model):
 	)
 
 	trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE)
-	pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE)
+	pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE, limit_choices_to={"is_verified":True})
 	nickname =  models.CharField(max_length=32, blank=True)
 	level = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(100)])
 	sex = models.CharField(max_length=1, choices=sex_choices)

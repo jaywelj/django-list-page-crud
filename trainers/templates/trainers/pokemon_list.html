@@ -9,6 +9,7 @@
 		<hr>
 		<hr class="bottom-line">
 	</div>
+	
 	{% for pokemon in pokemons %}
 		{% if pokemon.is_verified or user.is_staff %}
 			<div class="col-md-8 col-md-offset-2" id="{{ pokemon.pk }}">

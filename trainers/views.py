@@ -3,6 +3,7 @@ from .models import Trainer, Pokemon, PokemonOwnership
 from .forms import TrainerForm, PokemonForm, PokemonOwnershipForm
 from django.contrib.auth.decorators import login_required
 from itertools import chain
+from django.contrib import messages
 
 # Create your views here.
 
@@ -24,6 +25,7 @@ def create_trainer(request):
 			post = form.save(commit=False)
 			post.user = request.user
 			post.save()
+			messages.success(request, "Trainer added!")
 			return redirect("home")
 	else:
 		form = TrainerForm()
@@ -36,6 +38,7 @@ def edit_trainer(request, pk):
 		form = TrainerForm(request.POST, request.FILES, instance=trainer)
 		if form.is_valid():
 			form.save()
+			messages.success(request, "Trainer saved!")
 			return redirect("/#" + str(trainer.pk))
 	else:
 		form = TrainerForm(instance=trainer)
@@ -45,6 +48,7 @@ def edit_trainer(request, pk):
 def remove_trainer(request, pk):
 	trainer = get_object_or_404(Trainer, pk=pk)
 	trainer.delete()
+	messages.success(request, "Trainer deleted!")
 	return redirect("home")
 
 @login_required	
@@ -71,6 +75,7 @@ def add_pokemon(request):
 			pokemon = form.save(commit=False)
 			pokemon.name = pokemon.name.capitalize()
 			pokemon.save()
+			messages.success(request, 'Pokemon added, needs staff verification.')
 			return redirect("pokemon_list")
 	else:
 		form = PokemonForm()
@@ -85,6 +90,7 @@ def edit_pokemon(request, pk):
 			pokemon = form.save(commit=False)
 			pokemon.name = pokemon.name.capitalize()
 			pokemon.save()
+			messages.success(request, "Pokemon info updated!")
 			return redirect("/pokemon_list#"+str(pokemon.pk))
 	else:
 		form = PokemonForm(instance=pokemon)
@@ -94,6 +100,7 @@ def edit_pokemon(request, pk):
 def remove_pokemon(request, pk):
 	pokemon = get_object_or_404(Pokemon, pk=pk)
 	pokemon.delete()
+	messages.success(request, "Pokemon removed!")
 	return redirect("pokemon_list")
 
 @login_required	
@@ -102,6 +109,7 @@ def verify_pokemon(request, pk):
 	pokemon = get_object_or_404(Pokemon, pk=pk)
 	pokemon.verify()
 	pokemon.save()
+	messages.success(request, "Pokemon Verified")
 	return redirect("pokemon_list")
 
 #search bar views
@@ -127,7 +135,7 @@ def search(request, search, pk):
 		else:
 			trainers = Trainer.objects.filter(user=request.user.id)
 		context = {"trainers": trainers}
-		template = "trainers/home.html" 
+		template = "trainers/your_trainers.html" 
 	elif search == "your_pokemons":
 		if query:
 			pokemons = PokemonOwnership.objects.filter(trainer__user = pk, pokemon__name__icontains=query)
@@ -142,7 +150,8 @@ def search(request, search, pk):
 		else:
 			pokemons = PokemonOwnership.objects.filter(trainer=pk)
 		context = {"pokemons": pokemons, "trainer":trainer}
-		template = "trainers/trainer_pokemon_list.html"  	
+		template = "trainers/trainer_pokemon_list.html"
+	context.update({"query":query})	  	
 	return render(request, template, context)
 
 @login_required	
@@ -163,6 +172,7 @@ def trainer_add_pokemon(request, pk):
 			pokemon = form.save(commit=False)
 			pokemon.trainer = trainer
 			pokemon.save()
+			messages.success(request, "New pokemon added to trainer!")
 			return redirect("trainer_pokemon_list", pk=trainer.pk)
 	else:
 		form = PokemonOwnershipForm	
@@ -171,9 +181,11 @@ def trainer_add_pokemon(request, pk):
 
 @login_required	
 def release_trainer_pokemon(request, pk):
-	pokemon = PokemonOwnership.objects.filter(pk=pk)
+	pokemon = get_object_or_404(PokemonOwnership, pk=pk)
+	trainer = pokemon.trainer.id
 	pokemon.delete()
-	return redirect("home")
+	messages.success(request, "Pokemon Released!")
+	return redirect("trainer_pokemon_list", pk=trainer)
 
 @login_required	
 def your_pokemons(request, pk):

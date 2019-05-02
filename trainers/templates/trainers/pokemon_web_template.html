@@ -43,6 +43,9 @@
 				</ul>
 			</div>
 			{% if user.is_authenticated %}
+			{% if query %}
+				<h4 class="pull-left">Search results for "{{query}}"</h4>
+			{% endif %}
 			<div class="cta-2-form text-right ">
 				{% if "/your_pokemons/" in request.path  %}
 					<form action="{% url 'search' search='your_pokemons' pk=user.pk %}" id="" role="search">
@@ -75,6 +78,14 @@
 	<script src="{% static 'js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'js/custom.js' %}"></script>
 	<script src="{% static 'js/contactform.js' %}"></script>
+	<script src="{% static 'js/sweetalert.min.js' %}"></script>
+	{% if messages %}
+		{% for message in messages %}
+			<script type="text/javascript">
+				swal("{{message.tags}}","{{message}}","{{message.tags}}")
+			</script>
+		{% endfor %}
+	{% endif %}
 
 </body>
 
