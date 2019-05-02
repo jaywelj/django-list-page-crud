@@ -840,7 +840,7 @@ Responsive media queries
     width: 230px;
     padding:15px;
 }
-.card img{
+.card-trainer img{
     vertical-align: top;
     border-style: none;
     object-fit: cover;

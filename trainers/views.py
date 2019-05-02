@@ -15,7 +15,7 @@ def home(request):
 @login_required	
 def your_trainers(request):
 	trainers = Trainer.objects.filter(user=request.user.id)
-	return render(request, "trainers/home.html", {"trainers":trainers})
+	return render(request, "trainers/your_trainers.html", {"trainers":trainers})
 
 @login_required	
 def create_trainer(request):
